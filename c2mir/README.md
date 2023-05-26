@@ -63,38 +63,16 @@
 	c2m part1.c part2.c -eg                                          # variant 3
 ```
 
-## C to MIR compiler as a library
-  The compiler can be used as a library and can be made a part of your
-  program.  It can take C code from a file or memory. The all compiler
-  code is contained in file `c2mir.c`. Its interface is described in
-  file `c2mir.h`:
-  * Function `c2mir_init (MIR_context ctx)` initializes the compiler to generate MIR code in context `ctx`
-  * Function `c2mir_finish (MIR_context ctx)` finishes the compiler to
-    work in context `ctx`.  It frees some common memory used by the compiler
-    worked in context `ctx`
-  * Function `c2mir_compile (MIR_context_t ctx, struct c2mir_options *ops, int (*getc_func) (void *),
-                             void *getc_data, const char *source_name, FILE *output_file)`
-    compiles one C code file.  Function returns true (non-zero) in case of
-    successful compilation. It frees all memory used to compile the
-    file.  So you can compile a lot of files in the same context
-    without program memory growth.  Function `getc_func` provides
-    access to the compiled C code which can be
-    in a file or memory.  The function will get `getc_data` every its call as its argument.
-    Name of the source file used for diagnostic
-    is given by parameter `source_name`.  Parameter `output_file` is
-    analogous to one given by option `-o` of `c2m`.  Parameter ops is
-    a pointer to a structure defining the compiler options:
-    * Member `message_file` defines where to report errors and
-      warnings.  If its value is NULL, there will be no any output
-    * Members `macro_commands_num` and `macro_commands` direct compiler as options `-D` and `-U` of `c2m`
-    * Members `include_dirs_num` and `include_dirs` direct compiler as options `-I`
-    * Members `debug_p`, `verbose_p`, `ignore_warnings_p`, `no_prepro_p`, `prepro_only_p`,
-      `syntax_only_p`, `pedantic_p`, `asm_p`, and `object_p` direct
-      the compiler as options `-d`, `-v`, `-w`, `-fpreprocessed`, `-E`,
-      `-fsyntax-only`, `-pedantic`, `-S`, and `-c` of `c2m`.  If all values of `prepro_only_p`,
-      `syntax_only_p`, `asm_p`, and `object_p are zero, there will be no output files, only
-      the generated MIR module will be kept in memory of the context `ctx`
-    * Member `module_num` defines index in the generated MIR module name (if there is any)
+## 将C编译器作为库的MIR编译器
+该编译器可以作为库使用，并成为您程序的一部分。它可以从文件或内存中获取C代码。整个编译器的代码包含在文件`c2mir.c`中。其接口描述在文件`c2mir.h`中：
+* 函数`c2mir_init(MIR_context ctx)`用于初始化编译器，以在上下文`ctx`中生成MIR代码。
+* 函数`c2mir_finish(MIR_context ctx)`用于完成编译器在上下文`ctx`中的工作。它释放编译器在上下文`ctx`中使用的一些公共内存。
+* 函数`c2mir_compile(MIR_context_t ctx, struct c2mir_options *ops, int (*getc_func)(void *), void *getc_data, const char *source_name, FILE *output_file)`用于编译一个C代码文件。函数在成功编译时返回true（非零）。它释放用于编译文件的所有内存。因此，您可以在同一上下文中编译许多文件而无需增加程序内存。函数`getc_func`提供对编译的C代码的访问，该代码可以在文件或内存中。该函数的每次调用都会将`getc_data`作为参数传递。诊断使用的源文件的名称由参数`source_name`给出。参数`output_file`类似于`c2m`的`-o`选项。参数`ops`是一个指向定义编译器选项的结构体的指针：
+* 成员`message_file`定义报告错误和警告的位置。如果其值为NULL，则不会有任何输出。
+* 成员`macro_commands_num`和`macro_commands`将编译器指示为`c2m`的`-D`和`-U`选项。
+* 成员`include_dirs_num`和`include_dirs`将编译器指示为`-I`选项。
+* 成员`debug_p`、`verbose_p`、`ignore_warnings_p`、`no_prepro_p`、`prepro_only_p`、`syntax_only_p`、`pedantic_p`、`asm_p`和`object_p`将编译器指示为`c2m`的`-d`、`-v`、`-w`、`-fpreprocessed`、`-E`、`-fsyntax-only`、`-pedantic`、`-S`和`-c`选项。如果`prepro_only_p`、`syntax_only_p`、`asm_p`和`object_p`的所有值都为零，则不会生成输出文件，只会将生成的MIR模块保留在上下文`ctx`的内存中。
+* 成员`module_num`定义生成的MIR模块名称的索引（如果有的话）。
     
 ## Current state C to MIR compiler
   * **On Oct 25 we achieved a successful bootstrap**
